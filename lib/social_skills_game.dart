@@ -9,13 +9,12 @@ class SocialSkillsGame extends StatefulWidget {
 }
 
 class _SocialSkillsGameState extends State<SocialSkillsGame> {
-  int currentScenarioIndex = 0; // المؤشر للسؤال الحالي
-  int score = 0; // النقاط
+  int currentScenarioIndex = 0; 
+  int score = 0; 
   final AudioPlayer _audioPlayer = AudioPlayer();
-  bool isPlayingSound = false; // لمنع تشغيل الصوت أثناء تشغيل آخر
-  bool gameEnded = false; // لمنع تكرار عرض الرسالة
+  bool isPlayingSound = false; 
+  bool gameEnded = false; 
 
-  // قائمة السيناريوهات
   final List<Map<String, dynamic>> scenarios = [
     {
       "question": "كيف تقول أهلاً؟",
@@ -40,7 +39,6 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
     },
   ];
 
-  // تشغيل الصوت
   void playSound(String soundPath, VoidCallback onComplete) async {
     if (isPlayingSound) return;
 
@@ -67,7 +65,6 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
     }
   }
 
-  // التحقق من الإجابة
   void checkAnswer(bool isCorrect) {
     if (isCorrect) {
       score++; // زيادة النقاط
@@ -77,7 +74,6 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
     }
   }
 
-  // الانتقال للسؤال التالي
   void nextScenario() {
     if (currentScenarioIndex < scenarios.length - 1) {
       setState(() {
@@ -89,7 +85,6 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
     }
   }
 
-  // عرض رسالة النهاية
   void showEndDialog() {
     showDialog(
       context: context,
@@ -135,7 +130,6 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
     );
   }
 
-  // حساب الأداء
   String _calculatePerformance(int score, int total) {
     double percentage = (score / total) * 100;
     if (percentage >= 80) {
