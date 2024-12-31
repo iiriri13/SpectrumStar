@@ -8,7 +8,6 @@ import 'login.dart';
 class Profile extends StatelessWidget {
   const Profile({super.key});
 
-  // وظيفة لجلب بيانات المستخدم من Firestore
   Future<Map<String, dynamic>> _getUserData() async {
     String uid = FirebaseAuth.instance.currentUser!.uid;
     DocumentSnapshot doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
@@ -107,7 +106,7 @@ class Profile extends StatelessWidget {
                             Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(builder: (context) => const LoginPage()),
-                                  (Route<dynamic> route) => false, // إزالة جميع الشاشات السابقة
+                                  (Route<dynamic> route) => false, 
                             );
                           });
                         },
