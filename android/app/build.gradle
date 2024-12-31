@@ -1,0 +1,46 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+apply plugin: 'com.google.gms.google-services' // تأكد من إضافته في النهاية
+
+android {
+    namespace = "com.example.spectrumstar1"
+    compileSdk = 34  // تأكد من تحديث الـ SDK إذا كان ضرورياً
+
+    defaultConfig {
+        defaultConfig {
+            applicationId "com.example.spectrumstar"
+            minSdkVersion 23 // قم بتغيير القيمة إلى 23
+            targetSdkVersion 33 // تأكد أن هذا مناسب
+            versionCode 1
+            versionName "1.0"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation 'com.google.firebase:firebase-auth:23.1.0'  // Firebase Auth
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')  // Firebase BOM
+}

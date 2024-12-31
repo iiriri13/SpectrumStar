@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "334698502385",
+    "firebase_url": "https://spectrumstar-63bde-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "spectrumstar-63bde",
+    "storage_bucket": "spectrumstar-63bde.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:334698502385:android:48b3799e685eb6b9127150",
+        "android_client_info": {
+          "package_name": "com.example.spectrumstar"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAmw9N3jusneMXoKVU3540sS0VZoFaWIo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
