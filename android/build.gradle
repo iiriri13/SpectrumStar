@@ -1,11 +1,11 @@
 buildscript {
     repositories {
-        google()  // تأكد من إضافة Google repository
+        google()  
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.4'  // تأكد من تحديث الإصدار
-        classpath 'com.google.gms:google-services:4.4.2' // تأكد من أن هذا موجود هنا
+        classpath 'com.android.tools.build:gradle:8.1.4'  
+        classpath 'com.google.gms:google-services:4.4.2' 
     }
 }
 
