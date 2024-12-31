@@ -17,21 +17,21 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
 
   final List<Map<String, dynamic>> scenarios = [
     {
-      "question": "كيف تقول أهلاً؟",
+      "question": "How you will say hello?",
       "options": [
         {"image": "assets/hello.jpg", "isCorrect": true},
         {"image": "assets/ignore.jpg", "isCorrect": false},
       ],
     },
     {
-      "question": "ماذا تفعل إذا احتجت شيئًا؟",
+      "question": "How will you ask for help? ",
       "options": [
         {"image": "assets/ask.jpg", "isCorrect": true},
         {"image": "assets/askshy.jpg", "isCorrect": false},
       ],
     },
     {
-      "question": "ماذا تفعل إذا رأيت لعبة؟",
+      "question": "What would you do if you saw a toy with your friend? ",
       "options": [
         {"image": "assets/ask_share.png", "isCorrect": true},
         {"image": "assets/take_force.png", "isCorrect": false},
@@ -67,7 +67,7 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
 
   void checkAnswer(bool isCorrect) {
     if (isCorrect) {
-      score++; // زيادة النقاط
+      score++; 
       playSound('correct.mp3', nextScenario);
     } else {
       playSound('wrong.wav', nextScenario);
@@ -77,7 +77,7 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
   void nextScenario() {
     if (currentScenarioIndex < scenarios.length - 1) {
       setState(() {
-        currentScenarioIndex++; // التحديث للسؤال التالي
+        currentScenarioIndex++; 
       });
     } else if (!gameEnded) {
       gameEnded = true;
@@ -89,12 +89,12 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("انتهت اللعبة!"),
+        title: const Text("Game Over!"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "نتيجتك: $score من ${scenarios.length}",
+              "Your score: $score من ${scenarios.length}",
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
@@ -116,14 +116,14 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
                 gameEnded = false;
               });
             },
-            child: const Text("إعادة اللعب"),
+            child: const Text("Play again"),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               Navigator.pop(context);
             },
-            child: const Text("الخروج"),
+            child: const Text("Exit the game"),
           ),
         ],
       ),
@@ -133,11 +133,11 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
   String _calculatePerformance(int score, int total) {
     double percentage = (score / total) * 100;
     if (percentage >= 80) {
-      return "رائع جدًا!";
+      return "Awsome!";
     } else if (percentage >= 50) {
-      return "جيد!";
+      return "Very Good!";
     } else {
-      return "حاول مرة أخرى!";
+      return "Try again!";
     }
   }
 
@@ -147,7 +147,7 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("لعبة المهارات الاجتماعية"),
+        title: const Text("Social Skills Game"),
         backgroundColor: const Color(0xFFB2A4D4),
       ),
       body: Center(
@@ -180,7 +180,7 @@ class _SocialSkillsGameState extends State<SocialSkillsGame> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  "النتيجة: $score",
+                  "Score: $score",
                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
