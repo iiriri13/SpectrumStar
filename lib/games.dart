@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'contentview.dart';
 import 'emotions_game.dart';
-import 'social_skills_game.dart'; // استيراد لعبة المهارات الاجتماعية
+import 'social_skills_game.dart'; 
 
 class GamesPage extends StatelessWidget {
   const GamesPage({super.key});
