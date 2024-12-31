@@ -18,7 +18,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> _register() async {
     try {
-      // التحقق من تطابق كلمات المرور
       if (_passwordController.text.trim() != _confirmPasswordController.text.trim()) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Passwords do not match")),
@@ -26,13 +25,11 @@ class _SignUpPageState extends State<SignUpPage> {
         return;
       }
 
-      // تسجيل المستخدم
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      // حفظ بيانات المستخدم في Firestore
       await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
         'UserID': userCredential.user!.uid,
         'Name': _nameController.text.trim(),
@@ -44,7 +41,7 @@ class _SignUpPageState extends State<SignUpPage> {
         const SnackBar(content: Text("Account created successfully!")),
       );
 
-      Navigator.pop(context); // الانتقال لصفحة تسجيل الدخول
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.toString())),
