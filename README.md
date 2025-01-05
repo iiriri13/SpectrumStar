@@ -18,19 +18,6 @@ This project aims to provide a supportive platform for families with children wh
 
 ---
 
-## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/username/project-name.git
-   cd project-name
-
-	2.	Install the required dependencies:
-
-flutter pub get
-
-
-	3.	Set up Firebase by adding google-services.json or GoogleService-Info.plist files for your platform.
-
 How to Use
 
 Sign Up/Login
