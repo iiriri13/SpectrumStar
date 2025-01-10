@@ -1,10 +1,19 @@
+import 'dart:convert'; 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(const MaterialApp(
+    home: AiDiagnosisPage(),
+    debugShowCheckedModeBanner: false,
+  ));
+}
 
 class AiDiagnosisPage extends StatelessWidget {
   const AiDiagnosisPage({Key? key}) : super(key: key);
@@ -54,7 +63,6 @@ class AiDiagnosisPage extends StatelessWidget {
   }
 }
 
-// Survey Page
 class SurveyPage extends StatefulWidget {
   const SurveyPage({Key? key}) : super(key: key);
 
@@ -65,29 +73,38 @@ class SurveyPage extends StatefulWidget {
 class _SurveyPageState extends State<SurveyPage> {
   final List<Map<String, String>> surveyQuestions = [
     {'qID': 'Q1', 'question_text': 'Does your child look at you when you call his/her name?'},
-    {'qID': 'Q2', 'question_text': 'How easy is it for you to get eye contact with your child?'},
-    {'qID': 'Q3', 'question_text': 'Does your child point to indicate that s/he wants something?'},
-    {'qID': 'Q4', 'question_text': 'Does your child point to share interest with you?'},
-    {'qID': 'Q5', 'question_text': 'Does your child pretend? (e.g. care for dolls, talk on a toy phone)'},
-    {'qID': 'Q6', 'question_text': 'Does your child follow where you’re looking?'},
-    {'qID': 'Q7', 'question_text': 'If someone is visibly upset, does your child show signs of comforting them?'},
-    {'qID': 'Q8', 'question_text': 'Would you describe your child’s first words as?'},
-    {'qID': 'Q9', 'question_text': 'Does your child use simple gestures? (e.g. wave goodbye)'},
-    {'qID': 'Q10', 'question_text': 'Does your child stare at nothing with no apparent purpose?'},
+    {'qID': 'Q2', 'question_text': 'Is it easy for you to establish eye contact with your child?'},
+    {'qID': 'Q3', 'question_text': 'Dose your child point to indicate that s/he wants something (e.g.a) toy that is out of reach?'},
+    {'qID': 'Q4', 'question_text': 'Dose yor child pretend? (e.g. care for dolls, talk on a toy phone)?'},
+    {'qID': 'Q5', 'question_text': 'Dose your child follow where you’re looking?'},
+    {'qID': 'Q6', 'question_text': 'If you or someone else in the family is visibly upset, does your child show signs of trying to comfort you? (e.g., stroking hair or hugging)?'},
+    {'qID': 'Q7', 'question_text': 'Can you describe your child’s first words as clear and understandable?'},
+    {'qID': 'Q8', 'question_text': 'Does your child use simple gestures? (e.g., waving goodbye)'},
+    {'qID': 'Q9', 'question_text': 'Does your child stare into space with no clear purpose?'},
   ];
 
   int currentQuestionIndex = 0;
   Map<String, int> answers = {};
+  final TextEditingController childNameController = TextEditingController();
+  String? selectedAge;
+  bool infoSubmitted = false;
 
   Future<void> saveAnswersToFirestore(Map<String, int> answers) async {
     try {
-      final CollectionReference answersCollection =
-      FirebaseFirestore.instance.collection('answers');
+      final CollectionReference answersCollection = FirebaseFirestore.instance.collection('answers');
+
+      // ترتيب الإجابات حسب ترتيب الأسئلة
+      Map<String, int> orderedAnswers = {};
+      for (var question in surveyQuestions) {
+        orderedAnswers[question['qID']!] = answers[question['qID']!] ?? 0;
+      }
 
       await answersCollection.add({
         'user_id': FirebaseAuth.instance.currentUser?.uid ?? "unknown_user",
+        'child_name': childNameController.text.trim(),
+        'child_age': selectedAge ?? "unknown_age",
         'timestamp': Timestamp.now(),
-        'answers': answers,
+        'answers': orderedAnswers,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -138,7 +155,8 @@ class _SurveyPageState extends State<SurveyPage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
+          child: infoSubmitted
+              ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -163,6 +181,53 @@ class _SurveyPageState extends State<SurveyPage> {
                 child: const Text('No'),
               ),
             ],
+          )
+              : Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextField(
+                controller: childNameController,
+                decoration: const InputDecoration(
+                  labelText: 'Child Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                decoration: const InputDecoration(
+                  labelText: 'Child Age',
+                  border: OutlineInputBorder(),
+                ),
+                value: selectedAge,
+                items: List.generate(17, (index) {
+                  int age = index + 1;
+                  return DropdownMenuItem(
+                    value: age.toString(),
+                    child: Text(age.toString()),
+                  );
+                }),
+                onChanged: (value) {
+                  setState(() {
+                    selectedAge = value;
+                  });
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  if (childNameController.text.trim().isEmpty || selectedAge == null) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Please fill in all fields")),
+                    );
+                    return;
+                  }
+                  setState(() {
+                    infoSubmitted = true;
+                  });
+                },
+                child: const Text('Start Survey'),
+              ),
+            ],
           ),
         ),
       ),
@@ -170,7 +235,6 @@ class _SurveyPageState extends State<SurveyPage> {
   }
 }
 
-// Upload Photos Page
 class UploadPhotosPage extends StatefulWidget {
   const UploadPhotosPage({Key? key}) : super(key: key);
 
@@ -191,22 +255,19 @@ class _UploadPhotosPageState extends State<UploadPhotosPage> {
     }
   }
 
-  Future<void> uploadImagesToFirebase() async {
+  Future<void> uploadImagesToFirestore() async {
     try {
-      List<String> imageUrls = [];
+      List<String> imageBase64List = [];
       for (var image in selectedImages) {
-        final ref = FirebaseStorage.instance
-            .ref()
-            .child('user_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
-        await ref.putFile(image);
-        String imageUrl = await ref.getDownloadURL();
-        imageUrls.add(imageUrl);
+        List<int> imageBytes = await image.readAsBytes();
+        String imageBase64 = base64Encode(imageBytes);
+        imageBase64List.add(imageBase64);
       }
 
       await FirebaseFirestore.instance.collection('uploads').add({
         'user_id': FirebaseAuth.instance.currentUser?.uid ?? "unknown_user",
         'timestamp': Timestamp.now(),
-        'images': imageUrls,
+        'images': imageBase64List,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -254,7 +315,7 @@ class _UploadPhotosPageState extends State<UploadPhotosPage> {
               ),
             ),
             ElevatedButton(
-              onPressed: uploadImagesToFirebase,
+              onPressed: uploadImagesToFirestore,
               child: const Text('Upload Images'),
             ),
           ],
@@ -262,13 +323,4 @@ class _UploadPhotosPageState extends State<UploadPhotosPage> {
       ),
     );
   }
-}
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(const MaterialApp(
-    home: AiDiagnosisPage(),
-    debugShowCheckedModeBanner: false,
-  ));
 }
